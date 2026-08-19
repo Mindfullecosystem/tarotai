@@ -127,7 +127,18 @@ export default function CheckoutModal({ plan, onClose }: { plan: Plan; onClose: 
               <p className="mt-1.5"><span className="text-gold-400">2.</span> Te escribiremos para acordar día y hora.</p>
               <p className="mt-1.5"><span className="text-gold-400">3.</span> Prepara tu pregunta: el mazo ya te está esperando.</p>
             </div>
-            <button onClick={onClose} className="mt-6 w-full rounded-full border border-gold-500/60 py-3 font-display text-[12px] font-semibold uppercase tracking-[0.22em] text-gold-300 transition-colors hover:bg-gold-500 hover:text-night-950">
+            <a
+              href={sumupUrl(plan)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 block w-full rounded-full bg-gold-500 py-3 text-center font-display text-[12px] font-bold uppercase tracking-[0.22em] text-night-950 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              Abrir pago en SumUp ↗
+            </a>
+            <p className="mt-2 text-center text-xs italic text-plum-400">
+              ¿No se abrió la pestaña? Pulsa el botón dorado.
+            </p>
+            <button onClick={onClose} className="mt-4 w-full rounded-full border border-gold-500/60 py-3 font-display text-[12px] font-semibold uppercase tracking-[0.22em] text-gold-300 transition-colors hover:bg-gold-500 hover:text-night-950">
               Volver al oráculo
             </button>
           </div>

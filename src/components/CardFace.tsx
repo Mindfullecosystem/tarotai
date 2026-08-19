@@ -78,11 +78,11 @@ export default function CardFace({ card, className }: { card: TarotCardData; cla
         return <line key={i} x1={120 + 72 * Math.cos(a)} y1={180 + 72 * Math.sin(a)} x2={120 + 66 * Math.cos(a)} y2={180 + 66 * Math.sin(a)} stroke="#d9b36c" strokeWidth="1" opacity="0.5" />;
       })}
 
-      {/* contenido central */}
+      {/* contenido central (svg anidado — máxima compatibilidad) */}
       {!isMinor && (
-        <foreignObject x="63" y="123" width="114" height="114">
+        <svg x="63" y="123" width="114" height="114">
           <Glyph id={card.glyph} className="h-full w-full text-gold-500" strokeWidth={3.4} />
-        </foreignObject>
+        </svg>
       )}
 
       {isMinor && pipCount && (
@@ -90,9 +90,9 @@ export default function CardFace({ card, className }: { card: TarotCardData; cla
           {PIPS[pipCount].map(([fx, fy], i) => {
             const s = pipCount <= 1 ? 92 : pipCount <= 3 ? 60 : pipCount <= 6 ? 46 : 34;
             return (
-              <foreignObject key={i} x={62 + fx * 116 - s / 2} y={110 + fy * 140 - s / 2} width={s} height={s}>
+              <svg key={i} x={62 + fx * 116 - s / 2} y={110 + fy * 140 - s / 2} width={s} height={s}>
                 <Glyph id={card.glyph} className="h-full w-full text-gold-500" strokeWidth={5.2} />
-              </foreignObject>
+              </svg>
             );
           })}
         </>
@@ -101,9 +101,9 @@ export default function CardFace({ card, className }: { card: TarotCardData; cla
       {isCourt && (
         <>
           <text x="120" y="140" textAnchor="middle" fontFamily="Cinzel, serif" fontWeight="700" fontSize="30" fill="#f0d49a">{card.numeral}</text>
-          <foreignObject x="75" y="148" width="90" height="90">
+          <svg x="75" y="148" width="90" height="90">
             <Glyph id={card.glyph} className="h-full w-full text-gold-500" strokeWidth={4.2} />
-          </foreignObject>
+          </svg>
           <path d="M88 246h64" stroke="#b8934f" strokeWidth="1" opacity="0.7" />
         </>
       )}
