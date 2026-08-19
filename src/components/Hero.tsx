@@ -7,9 +7,24 @@ const FAN = Array.from({ length: 9 }, (_, i) => i - 4); // -4..4
 export default function Hero() {
   return (
     <section id="inicio" className="relative flex min-h-screen flex-col overflow-hidden">
-      {/* fondo: la mesa ritual */}
-      <div className="absolute inset-0">
-        <img src={TABLE_IMG} alt="" className="slow-zoom h-full w-full object-cover" />
+      {/* fondo: la mesa ritual (con fondo diseñado por si la imagen no carga) */}
+      <div className="absolute inset-0 bg-night-900">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(1100px 620px at 78% 30%, rgba(217,179,108,0.16), transparent 60%), radial-gradient(900px 700px at 15% 85%, rgba(111,95,146,0.30), transparent 62%), radial-gradient(600px 420px at 85% 88%, rgba(201,138,150,0.12), transparent 60%), linear-gradient(160deg, #171027 0%, #100a1c 55%, #0b0713 100%)",
+          }}
+        />
+        <svg viewBox="0 0 24 24" className="absolute right-[6%] top-[16%] h-40 w-40 text-gold-500/14 md:h-64 md:w-64" aria-hidden="true">
+          <path d="M12 1l2.8 8.2L23 12l-8.2 2.8L12 23l-2.8-8.2L1 12l8.2-2.8z" fill="currentColor" />
+        </svg>
+        <img
+          src={TABLE_IMG}
+          alt=""
+          className="slow-zoom h-full w-full object-cover"
+          onError={(e) => { e.currentTarget.style.display = "none"; }}
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-night-950 via-night-950/78 to-night-950/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-night-950 via-transparent to-night-950/70" />
       </div>
