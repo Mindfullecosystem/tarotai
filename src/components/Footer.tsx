@@ -50,6 +50,17 @@ export default function Footer() {
             <span className="font-display text-[11px] font-bold uppercase tracking-[0.25em] text-gold-300">Pagos</span>
             <span className="mt-1 block italic">SumUp · Visa · Mastercard · Apple Pay · Google Pay</span>
           </p>
+          <a
+            href="/arcana.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group mt-4 inline-flex items-center gap-2 font-display text-[11px] font-semibold uppercase tracking-[0.25em] text-gold-400 transition-colors hover:text-gold-300"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M14 4h6v6M20 4l-9 9M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            HTML autónomo (1 archivo) ↗
+          </a>
         </div>
       </div>
 
