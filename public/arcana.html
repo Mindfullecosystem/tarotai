@@ -1,0 +1,776 @@
+<!doctype html>
+<!-- ═══════════════════════════════════════════════════════════════
+     ARCANA · HTML PERSONALIZADO AUTÓNOMO
+     Un solo archivo: estilos + las 78 cartas + tirada + pago SumUp.
+     · Ábrelo con doble clic en cualquier navegador, o
+     · súbelo tal cual a Cloudflare Pages / Netlify / tu hosting.
+     Enlace de pago: https://pay.sumup.com/b2c/QVDJ846Y
+     ═══════════════════════════════════════════════════════════════ -->
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Arcana · Oráculo interactivo de Tarot</title>
+<meta name="description" content="Oráculo interactivo: tirada de tres cartas, los 78 arcanos y reserva de lecturas con pago seguro vía SumUp."/>
+<meta name="theme-color" content="#100a1c"/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23160f24'/%3E%3Cpath d='M50 12 L58 42 L88 50 L58 58 L50 88 L42 58 L12 50 L42 42 Z' fill='%23d9b36c'/%3E%3C/svg%3E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --n950:#0b0713; --n900:#100a1c; --n800:#171027; --n700:#201734; --n600:#2c2044;
+  --p400:#6f5f92; --p300:#9d8fb5;
+  --ivory:#efe6d4; --parch:#cfc2a8;
+  --g200:#f6e3b0; --g300:#f0d49a; --g400:#e3c07c; --g500:#d9b36c; --g600:#b8934f; --g700:#8f6f3a;
+  --rose:#c98a96;
+  --disp:"Cinzel",Georgia,serif; --body:"Cormorant Garamond",Georgia,serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:78px}
+body{background:var(--n950);color:var(--ivory);font-family:var(--body);font-size:19px;overflow-x:hidden}
+::selection{background:rgba(217,179,108,.35);color:#fff7e8}
+img{max-width:100%}
+button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.fd{font-family:var(--disp)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+
+/* ── atmósfera ── */
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.noise{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ── navegación ── */
+nav{position:fixed;inset:0 0 auto;z-index:50;border-bottom:1px solid rgba(143,111,58,.22);background:rgba(11,7,19,.72);backdrop-filter:blur(10px)}
+.nav-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 24px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:800;letter-spacing:.28em;font-size:18px}
+.brand svg{transition:transform .6s}
+.brand:hover svg{transform:rotate(180deg)}
+.nav-links{display:none;gap:28px}
+.nav-links a{font-family:var(--disp);font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--p300);transition:color .3s;position:relative}
+.nav-links a::after{content:"";position:absolute;left:50%;bottom:-6px;width:0;height:1px;background:var(--g400);transition:all .3s;transform:translateX(-50%)}
+.nav-links a:hover{color:var(--g300)}.nav-links a:hover::after{width:100%}
+.nav-cta{border:1px solid rgba(217,179,108,.6);border-radius:999px;padding:7px 18px;font-family:var(--disp);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--g300);transition:all .3s;display:none}
+.nav-cta:hover{background:var(--g500);color:var(--n950)}
+.moon-box{text-align:right}.moon-box b{display:block;font-family:var(--disp);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--g400)}
+.moon-box i{display:block;font-size:14px;color:var(--p300)}
+@media(min-width:900px){.nav-links{display:flex}.nav-cta{display:inline-block}.burger,.mmenu{display:none!important}}
+/* ── menú móvil ── */
+.burger{display:flex;width:42px;height:42px;align-items:center;justify-content:center;border:1px solid rgba(217,179,108,.5);border-radius:50%;color:var(--g300);flex-shrink:0;transition:all .3s}
+.burger:hover{background:var(--g500);color:var(--n950)}
+@media(min-width:900px){.burger{display:none}}
+.mmenu{position:fixed;left:0;right:0;top:66px;z-index:49;background:rgba(16,10,28,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(143,111,58,.3);padding:10px 16px 20px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.22,1,.36,1)}
+@media(max-width:899px){.moon-box,#moon-svg{display:none}}
+.mmenu.open{transform:none;opacity:1;pointer-events:auto}
+.mmenu a{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:10px;font-family:var(--disp);font-size:14px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ivory)}
+.mmenu a:hover{background:var(--n700);color:var(--g300)}
+.mmenu a em{color:var(--g500);font-style:normal;transition:transform .3s}
+.mmenu a:hover em{transform:translateX(4px)}
+.mmenu .mcta{display:block;margin-top:8px;text-align:center;background:var(--g500);color:var(--n950);border-radius:999px;font-weight:800}
+.mmenu .mcta:hover{background:var(--g400)}
+.mmenu .mmoon{margin-top:14px;justify-content:center;gap:8px;font-size:10px;letter-spacing:.22em;color:var(--p300);text-transform:uppercase}
+
+/* ── hero: la mesa ritual ── */
+#inicio{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;
+  background:
+    radial-gradient(1100px 600px at 78% 30%,rgba(111,95,146,.28),transparent 60%),
+    radial-gradient(800px 500px at 20% 80%,rgba(143,111,58,.16),transparent 60%),
+    radial-gradient(3px 3px at 12% 22%,#f0d49a 50%,transparent 51%),
+    radial-gradient(2px 2px at 84% 16%,#f0d49a 50%,transparent 51%),
+    radial-gradient(2px 2px at 66% 40%,#cfc2a8 50%,transparent 51%),
+    radial-gradient(3px 3px at 30% 12%,#cfc2a8 50%,transparent 51%),
+    linear-gradient(180deg,#150e24 0%,#0b0713 70%)}
+.hero-grid{display:grid;gap:44px;align-items:center;padding:120px 0 40px}
+@media(min-width:1000px){.hero-grid{grid-template-columns:1.05fr 1fr;align-items:end;padding:0 0 60px}}
+.eyebrow{display:flex;align-items:center;gap:14px;font-family:var(--disp);font-size:11px;font-weight:600;letter-spacing:.42em;text-transform:uppercase;color:var(--g400)}
+.eyebrow::before{content:"";width:44px;height:1px;background:var(--g500)}
+h1{font-family:var(--disp);font-weight:900;line-height:.95;letter-spacing:.04em;margin-top:22px;font-size:clamp(3.2rem,9vw,7.4rem)}
+h1 small{display:block;margin-top:10px;font-size:clamp(1.3rem,3vw,2.4rem);font-weight:500;letter-spacing:.12em;color:var(--g300)}
+.hero-p{margin-top:26px;max-width:430px;font-size:21px;font-style:italic;line-height:1.6;color:var(--parch)}
+.hero-cta{margin-top:34px;display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:12px;border-radius:999px;background:var(--g500);color:var(--n950);padding:15px 30px;font-family:var(--disp);font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;transition:transform .3s}
+.btn:hover{transform:scale(1.04)}.btn:active{transform:scale(.96)}
+.btn .shine{position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:transform .7s}
+.btn:hover .shine{transform:translateX(100%)}
+.btn-ghost{border:1px solid rgba(217,179,108,.5);background:none;color:var(--g300);padding:14px 26px;border-radius:999px;font-family:var(--disp);font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;transition:all .3s}
+.btn-ghost:hover{border-color:var(--g400);color:var(--g200)}
+.hero-meta{margin-top:28px;font-family:var(--disp);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--p300)}
+.hero-meta i{color:var(--g500);font-style:normal;margin:0 8px}
+
+/* abanico */
+.fan{position:relative;height:380px;display:flex;align-items:flex-end;justify-content:center}
+.fan .c{position:absolute;bottom:24px;width:150px;transform-origin:50% 130%;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.fan .c:hover{transform:rotate(0deg) translateY(-38px) !important;z-index:30}
+.fan svg{width:100%;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55));transition:filter .5s}
+.fan .c:hover svg{filter:drop-shadow(0 24px 40px rgba(217,179,108,.28))}
+.fan-cap{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--disp);font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:var(--p300)}
+@media(max-width:999px){.fan{height:150px}.fan .c{width:86px;bottom:6px}}
+
+/* ── secciones ── */
+.sec{position:relative;padding:96px 0}
+.sec-alt{border-block:1px solid rgba(143,111,58,.2);background:rgba(16,10,28,.6)}
+.kicker{font-family:var(--disp);font-size:11px;font-weight:600;letter-spacing:.42em;text-transform:uppercase;color:var(--g400)}
+h2{font-family:var(--disp);font-weight:700;font-size:clamp(2rem,4.5vw,3.6rem);margin-top:12px;line-height:1.05}
+.sec-intro{margin-top:16px;max-width:620px;font-size:20px;font-style:italic;line-height:1.6;color:var(--parch)}
+
+/* ── cartas 3D ── */
+.card3d{perspective:1400px;aspect-ratio:2/3}
+.card3d-in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.34,1.2,.4,1)}
+.card3d.flipped .card3d-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.face-front{transform:rotateY(180deg)}
+.face svg{width:100%;height:100%;display:block}
+.face-front svg.rev{transform:rotate(180deg)}
+
+/* ── carta del día ── */
+.day-grid{display:grid;gap:48px;align-items:center}
+@media(min-width:900px){.day-grid{grid-template-columns:1.2fr 1fr}}
+.day-card{width:230px;margin:0 auto;cursor:pointer}
+.day-card svg{filter:drop-shadow(0 20px 40px rgba(0,0,0,.55))}
+.day-msg{margin-top:28px;border-left:2px solid rgba(217,179,108,.6);padding-left:20px}
+.day-msg b{font-family:var(--disp);font-size:24px;color:var(--g300)}
+.day-msg p{margin-top:8px;font-size:18px;font-style:italic;line-height:1.6;color:var(--parch)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{border:1px solid rgba(217,179,108,.4);border-radius:999px;padding:3px 12px;font-size:14px;font-style:italic;color:var(--g300)}
+.chip.rose{border-color:rgba(201,138,150,.4);color:var(--rose)}
+
+/* ── tirada ── */
+.spread{display:grid;gap:24px;margin-top:56px}
+@media(min-width:760px){.spread{grid-template-columns:repeat(3,1fr)}}
+.slot{display:flex;flex-direction:column;align-items:center}
+.slot .card3d{width:100%;max-width:190px}
+.slot .empty{height:100%;border:1px dashed rgba(143,111,58,.6);border-radius:14px;background:rgba(23,16,39,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:16px}
+.slot .empty b{font-family:var(--disp);font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--p300)}
+.slot .empty i{font-size:14px;color:var(--p400)}
+.slot-name{margin-top:16px;min-height:52px;text-align:center}
+.slot-name b{font-family:var(--disp);font-size:16px;color:var(--g300)}
+.pick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:760px;margin:24px auto 0}
+@media(min-width:640px){.pick-grid{grid-template-columns:repeat(6,1fr);gap:16px}}
+.pick{aspect-ratio:2/3;transform:rotate(var(--rot));transition:all .3s}
+.pick:hover:not(:disabled){transform:translateY(-10px) rotate(0)}
+.pick:disabled{opacity:.22;transform:scale(.9)}
+.pick svg{width:100%;height:100%;filter:drop-shadow(0 10px 18px rgba(0,0,0,.5));transition:filter .3s}
+.pick:hover:not(:disabled) svg{filter:drop-shadow(0 14px 26px rgba(217,179,108,.3))}
+.msg-box{max-width:760px;margin:32px auto 0;border:1px solid rgba(143,111,58,.4);background:rgba(23,16,39,.7);border-radius:14px;padding:32px}
+.msg-box .lead{font-size:21px;line-height:1.65}
+.msg-row{margin-top:18px;padding-top:18px;border-top:1px solid rgba(143,111,58,.3);line-height:1.6;color:var(--parch)}
+.msg-row b{font-family:var(--disp);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--g400)}
+.center{text-align:center}
+.shuf{position:relative;height:96px;width:160px;margin:0 auto 16px}
+.shuf > div{position:absolute;inset:0;animation:jit .42s ease-in-out var(--d,0s) 2}
+.shuf svg{width:100%;height:100%}
+@keyframes jit{0%,100%{transform:translate(0,0)}25%{transform:translate(var(--x,-14px),-14px) rotate(-6deg)}60%{transform:translate(calc(var(--x,-14px)*-.6),-6px) rotate(5deg)}}
+
+/* ── arcanos destacados ── */
+.feat-grid{display:grid;gap:36px;margin-top:64px}
+@media(min-width:700px){.feat-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1100px){.feat-grid{grid-template-columns:repeat(4,1fr)}.feat-grid figure:nth-child(even){transform:translateY(48px)}}
+figure.lamina{position:relative}
+.lamina .arco{overflow:hidden;border-radius:999px 999px 8px 8px;border:1px solid rgba(143,111,58,.5);padding:8px 8px 0;background:linear-gradient(160deg,#241a3a,#120c1e)}
+.lamina .arco-in{overflow:hidden;border-radius:990px 990px 4px 4px;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 50% 35%,rgba(217,179,108,.14),transparent 60%),linear-gradient(170deg,#1c1430,#120c1e)}
+.lamina .arco-in svg{width:62%;color:var(--g500);animation:kenburns 22s ease-in-out infinite alternate}
+@keyframes kenburns{from{transform:scale(1) translateY(0)}to{transform:scale(1.12) translateY(-3%)}}
+.lamina figcaption{position:relative;z-index:2;margin-top:-2px;border:1px solid rgba(143,111,58,.5);border-top:0;border-radius:0 0 8px 8px;background:rgba(23,16,39,.92);padding:20px;text-align:center;backdrop-filter:blur(4px)}
+.lamina figcaption small{font-family:var(--disp);font-size:11px;font-weight:600;letter-spacing:.35em;text-transform:uppercase;color:var(--g500)}
+.lamina figcaption b{display:block;margin-top:4px;font-family:var(--disp);font-size:20px}
+.lamina figcaption p{margin-top:8px;font-size:15px;font-style:italic;line-height:1.55;color:var(--parch)}
+.lamina .spark{position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:3;color:var(--g400);filter:drop-shadow(0 0 8px rgba(217,179,108,.6))}
+
+/* ── galería ── */
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin-top:40px}
+.fbtn{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(143,111,58,.5);border-radius:999px;padding:8px 16px;font-family:var(--disp);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--p300);transition:all .3s}
+.fbtn:hover{border-color:rgba(217,179,108,.7);color:var(--g300)}
+.fbtn.on{background:var(--g500);color:var(--n950);border-color:var(--g400);box-shadow:0 0 22px rgba(217,179,108,.35)}
+.fbtn em{font-style:normal;border-radius:999px;background:var(--n700);color:var(--g400);padding:0 7px;font-size:11px}
+.fbtn.on em{background:rgba(11,7,19,.15);color:var(--n950)}
+.ggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:48px}
+@media(min-width:640px){.ggrid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:900px){.ggrid{grid-template-columns:repeat(6,1fr)}}
+@media(min-width:1150px){.ggrid{grid-template-columns:repeat(8,1fr)}}
+.gcard{aspect-ratio:2/3;transform:rotate(var(--rot));transition:all .3s;position:relative}
+.gcard:hover{transform:translateY(-8px) rotate(0);z-index:10}
+.gcard svg{width:100%;height:100%;filter:drop-shadow(0 8px 16px rgba(0,0,0,.45));transition:filter .3s}
+.gcard:hover svg{filter:drop-shadow(0 16px 28px rgba(217,179,108,.3))}
+
+/* ── tarifas ── */
+.plans{display:grid;gap:32px;margin-top:64px}
+@media(min-width:900px){.plans{grid-template-columns:repeat(3,1fr);gap:20px}}
+.plan{position:relative;display:flex;flex-direction:column;border:1px solid rgba(143,111,58,.4);background:rgba(23,16,39,.8);border-radius:14px;padding:28px;transition:all .5s}
+.plan:hover{transform:translateY(-8px) rotate(0) !important;border-color:rgba(217,179,108,.6)}
+@media(min-width:900px){.plan:nth-child(1){transform:rotate(-3deg) translateY(24px)}.plan:nth-child(3){transform:rotate(3deg) translateY(24px)}.plan:nth-child(2){transform:translateY(-16px)}}
+.plan.star{border-color:rgba(227,192,124,.8);background:linear-gradient(180deg,var(--n700),var(--n800));box-shadow:0 24px 60px rgba(217,179,108,.16)}
+.plan .tag{position:absolute;top:-14px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--g500);color:var(--n950);border-radius:999px;padding:4px 16px;font-family:var(--disp);font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase}
+.plan small{font-family:var(--disp);font-size:11px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--g400)}
+.plan h3{font-family:var(--disp);font-size:24px;margin-top:8px}
+.price{margin-top:16px;display:flex;align-items:baseline;gap:8px;font-family:var(--disp)}
+.price b{font-size:46px;font-weight:900;color:var(--g300)}
+.price i{font-size:18px;color:var(--p300)}
+.plan ul{margin-top:24px;padding-top:20px;border-top:1px solid rgba(143,111,58,.3);list-style:none;flex:1}
+.plan li{display:flex;gap:10px;align-items:flex-start;font-size:17px;font-style:italic;color:var(--parch);margin-bottom:10px}
+.plan li::before{content:"✳";color:var(--g500);font-style:normal}
+
+/* ── modales ── */
+.overlay{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:16px;overscroll-behavior:contain}
+.overlay[hidden]{display:none}
+.overlay .bg{position:absolute;inset:0;background:rgba(11,7,19,.88);backdrop-filter:blur(6px);border:0;animation:backfade .28s ease both}
+@keyframes backfade{from{opacity:0}}
+.panel{position:relative;width:100%;max-width:460px;max-height:92vh;overflow-y:auto;overscroll-behavior:contain;background:var(--n800);border:1px solid rgba(217,179,108,.5);border-radius:14px;box-shadow:0 40px 90px rgba(0,0,0,.75);animation:pop .5s cubic-bezier(.22,1,.36,1)}
+@keyframes pop{from{opacity:0;transform:translateY(40px) scale(.94)}to{opacity:1;transform:none}}
+.panel::before{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--g700),var(--g300),var(--g700))}
+.panel-in{padding:28px}
+.x{position:absolute;right:12px;top:14px;z-index:2;width:36px;height:36px;border:1px solid rgba(217,179,108,.5);border-radius:50%;color:var(--g300);font-size:18px;transition:all .3s}
+.x:hover{background:var(--g500);color:var(--n950)}
+.field{display:block;margin-top:16px}
+.field span{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--p300)}
+.field input{margin-top:6px;width:100%;border:1px solid rgba(143,111,58,.5);background:rgba(16,10,28,.8);border-radius:8px;padding:11px 16px;font-family:var(--body);font-size:17px;color:var(--ivory)}
+.field input:focus{outline:none;border-color:var(--g400)}
+.err{margin-top:8px;font-size:15px;font-style:italic;color:var(--rose)}
+.sumrow{margin-top:20px;border:1px solid rgba(143,111,58,.4);background:rgba(16,10,28,.6);border-radius:8px;padding:16px;font-size:15px}
+.sumrow div{display:flex;justify-content:space-between;gap:16px;margin-bottom:8px;font-style:italic;color:var(--p300)}
+.sumrow div b{color:var(--ivory);font-weight:500;text-align:right}
+.sumrow .tot{border-top:1px solid rgba(143,111,58,.4);padding-top:10px;margin:10px 0 0}
+.sumrow .tot span{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g300);font-style:normal}
+.sumrow .tot b{font-family:var(--disp);font-size:21px;color:var(--g300)}
+.wide{display:block;width:100%;margin-top:24px;border-radius:999px;background:var(--g500);color:var(--n950);padding:15px;font-family:var(--disp);font-size:13px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;transition:transform .3s;text-align:center}
+.wide:hover{transform:scale(1.02)}.wide:active{transform:scale(.98)}
+.wide:disabled{opacity:.8;cursor:wait}
+.safe{margin-top:14px;text-align:center;font-size:14px;font-style:italic;color:var(--p300)}
+.thanks-pop{width:80px;height:80px;margin:0 auto;border:2px solid var(--g400);border-radius:50%;background:rgba(217,179,108,.1);display:flex;align-items:center;justify-content:center;color:var(--g300);font-size:38px;animation:pop .6s cubic-bezier(.22,1,.36,1)}
+.steps{margin-top:24px;border:1px solid rgba(143,111,58,.4);background:rgba(16,10,28,.6);border-radius:8px;padding:16px;font-size:15px;font-style:italic;color:var(--p300);text-align:left}
+.steps p{margin-bottom:6px}.steps i{color:var(--g400);font-style:normal}
+.ghost{display:block;width:100%;margin-top:16px;border:1px solid rgba(217,179,108,.6);border-radius:999px;padding:13px;font-family:var(--disp);font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--g300);transition:all .3s;text-align:center}
+.ghost:hover{background:var(--g500);color:var(--n950)}
+
+/* ── pie ── */
+footer{position:relative;z-index:2;border-top:1px solid rgba(143,111,58,.25);background:rgba(11,7,19,.9)}
+.f-grid{display:grid;gap:40px;padding:56px 0}
+@media(min-width:900px){.f-grid{grid-template-columns:1.3fr 1fr 1fr}}
+.f-grid h4{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--g400)}
+.f-grid ul{list-style:none;margin-top:16px}
+.f-grid li{margin-bottom:10px}
+.f-grid li a{display:inline-flex;align-items:center;gap:10px;font-size:18px;font-style:italic;color:var(--p300);transition:color .3s}
+.f-grid li a::before{content:"";width:16px;height:1px;background:var(--g700);transition:all .3s}
+.f-grid li a:hover{color:var(--g300)}.f-grid li a:hover::before{width:28px;background:var(--g400)}
+.f-note{margin-top:20px;border:1px solid rgba(143,111,58,.4);background:rgba(23,16,39,.6);border-radius:8px;padding:14px 16px;font-size:15px;font-style:italic;color:var(--parch)}
+.f-bottom{border-top:1px solid rgba(143,111,58,.2);padding:20px 0;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-family:var(--disp);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--p400)}
+.f-bottom i{color:var(--g600);font-style:normal;margin:0 8px}
+
+/* ── movimiento ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1);transition-delay:var(--d,0ms)}
+.reveal.on{opacity:1;transform:none}
+.deal{animation:deal .7s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--d,0ms)}
+@keyframes deal{from{opacity:0;transform:translateY(70px) rotate(var(--r,4deg)) scale(.9)}to{opacity:1;transform:translateY(0) rotate(var(--r0,0)) scale(1)}}
+.floaty{animation:floaty 7s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.gold-rule{position:relative;height:1px;background:linear-gradient(90deg,transparent,rgba(217,179,108,.55),transparent);overflow:hidden}
+.gold-rule::after{content:"";position:absolute;left:0;top:-1px;width:90px;height:3px;background:linear-gradient(90deg,transparent,#f0d49a,transparent);animation:sweep 6s ease-in-out infinite}
+@keyframes sweep{0%{transform:translateX(-100px);opacity:0}12%{opacity:1}50%{transform:translateX(900px);opacity:1}60%,100%{transform:translateX(900px);opacity:0}}
+#confetti{position:fixed;inset:0;z-index:95;pointer-events:none}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.15s !important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div class="noise"></div>
+<canvas id="confetti"></canvas>
+
+<!-- ══ NAVEGACIÓN ══ -->
+<nav>
+  <div class="nav-in">
+    <a class="brand" href="#inicio">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#d9b36c" aria-hidden="true"><path d="M12 1l2.8 8.2L23 12l-8.2 2.8L12 23l-2.8-8.2L1 12l8.2-2.8z"/></svg>
+      ARCANA
+    </a>
+    <div class="nav-links">
+      <a href="#tirada">La tirada</a><a href="#arcanos">Arcanos</a><a href="#mazo">El mazo</a><a href="#reserva">Reserva</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="moon-box"><b id="moon-name">…</b><i id="moon-date"></i></div>
+      <span id="moon-svg"></span>
+      <a class="nav-cta" href="#reserva">Reservar lectura</a>
+      <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false">
+        <svg id="burger-ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- menú móvil -->
+<div class="mmenu" id="mmenu" aria-hidden="true">
+  <a href="#tirada">La tirada <em>→</em></a>
+  <a href="#arcanos">Arcanos <em>→</em></a>
+  <a href="#mazo">El mazo <em>→</em></a>
+  <a href="#reserva">Reserva <em>→</em></a>
+  <a class="mcta" href="#reserva">Reservar lectura</a>
+  <a class="mmoon"><span id="mmoon-ic"></span><span id="mmoon-txt">…</span></a>
+</div>
+
+<!-- ══ LA MESA RITUAL ══ -->
+<header id="inicio">
+  <div class="wrap hero-grid" style="width:100%">
+    <div class="reveal on">
+      <p class="eyebrow">El oráculo interactivo</p>
+      <h1>ARCANA<small>el lenguaje de las estrellas</small></h1>
+      <p class="hero-p">Setenta y ocho cartas, un espejo del alma. Baraja, pregunta y deja que el mazo responda — o reserva una lectura guiada.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#tirada"><span class="shine"></span>Comenzar la tirada
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4z"/></svg>
+        </a>
+        <a class="btn-ghost" href="#mazo">Explorar las 78</a>
+      </div>
+      <p class="hero-meta">22 arcanos mayores <i>✳</i> 56 arcanos menores <i>✳</i> 4 elementos</p>
+    </div>
+    <div class="fan" id="fan" aria-hidden="true"><span class="fan-cap">el mazo te siente — pasa el cursor</span></div>
+  </div>
+</header>
+
+<!-- ══ CARTA DEL DÍA ══ -->
+<section id="dia" class="sec sec-alt">
+  <div class="wrap day-grid">
+    <div class="reveal">
+      <p class="kicker">El augurio diario</p>
+      <h2>La carta del día</h2>
+      <p style="margin-top:10px;font-style:italic;color:var(--p300)" id="today"></p>
+      <p class="sec-intro">Cada amanecer el mazo elige una carta para ti — la misma para todos los que consultan hoy, y distinta a la de ayer. Tócala para voltearla y lleva su consejo contigo.</p>
+      <div id="day-msg"></div>
+    </div>
+    <div class="reveal" style="--d:150ms">
+      <div class="day-card card3d floaty" id="day-card" role="button" tabindex="0" aria-label="Voltear la carta del día"></div>
+      <div class="gold-rule" style="max-width:160px;margin:24px auto 12px"></div>
+      <p class="center fd" style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--p300)" id="day-cap">un secreto por revelar</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LA TIRADA ══ -->
+<section id="tirada" class="sec">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="kicker">Paso I · La pregunta</p>
+      <h2>La tirada de las tres cartas</h2>
+      <p class="sec-intro">Respira hondo y formula tu pregunta en silencio. Después baraja y elige tres cartas con la mano — no con la cabeza. Ellas hablarán de tu <b style="color:var(--g300)">pasado</b>, tu <b style="color:var(--g300)">presente</b> y tu <b style="color:var(--g300)">futuro</b>.</p>
+    </div>
+    <div class="spread" id="spread"></div>
+    <div id="action" class="center" style="margin-top:48px"></div>
+  </div>
+</section>
+
+<!-- ══ ARCANOS DESTACADOS ══ -->
+<section id="arcanos" class="sec">
+  <div class="wrap">
+    <div class="reveal" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px">
+      <div><p class="kicker">Paso II · Las figuras</p><h2>Cuatro arcanos, cuatro fuerzas</h2></div>
+      <p style="max-width:380px;font-size:18px;font-style:italic;line-height:1.6;color:var(--p300)">Láminas del mazo grabadas en oro sobre medianoche. Cada una, un capítulo del viaje del alma.</p>
+    </div>
+    <div class="feat-grid" id="feat"></div>
+    <div class="gold-rule" style="margin-top:90px"></div>
+  </div>
+</section>
+
+<!-- ══ EL MAZO COMPLETO ══ -->
+<section id="mazo" class="sec sec-alt">
+  <div class="wrap">
+    <div class="reveal" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px">
+      <div><p class="kicker">Paso III · El estudio</p><h2>El mazo completo</h2></div>
+      <p style="max-width:420px;font-size:18px;font-style:italic;line-height:1.6;color:var(--p300)">Las 78 láminas, grabadas aquí en oro sobre medianoche. Toca cualquiera para leer su significado al derecho y al revés.</p>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="ggrid" id="ggrid"></div>
+    <div class="gold-rule" style="margin-top:64px"></div>
+  </div>
+</section>
+
+<!-- ══ RESERVA ══ -->
+<section id="reserva" class="sec">
+  <div class="wrap" style="max-width:1050px">
+    <div class="reveal center">
+      <p class="kicker">Paso IV · El encuentro</p>
+      <h2>Reserva tu lectura</h2>
+      <p class="sec-intro" style="margin-inline:auto">Las cartas hablan, pero una voz experta las traduce. Elige tu ritual: pago seguro con SumUp, sin suscripciones ni letra pequeña.</p>
+    </div>
+    <div class="plans" id="plans"></div>
+    <div class="reveal center" style="margin-top:56px">
+      <div class="gold-rule" style="max-width:480px;margin:0 auto"></div>
+      <p style="margin-top:20px;font-style:italic;color:var(--p300)">El pago se procesa fuera de esta página, en el entorno cifrado de <b style="color:var(--g400);font-style:normal">SumUp</b>. Si algo se tuerce, escríbenos: el oráculo no cobra por errores.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PIE ══ -->
+<footer>
+  <div class="wrap">
+    <div class="f-grid">
+      <div>
+        <a class="brand" href="#inicio"><svg width="24" height="24" viewBox="0 0 24 24" fill="#d9b36c" aria-hidden="true"><path d="M12 1l2.8 8.2L23 12l-8.2 2.8L12 23l-2.8-8.2L1 12l8.2-2.8z"/></svg>ARCANA</a>
+        <p style="margin-top:16px;max-width:360px;font-size:18px;font-style:italic;line-height:1.6;color:var(--p300)">Un oráculo interactivo con las 78 cartas del tarot, láminas grabadas en oro y medianoche, y lecturas guiadas por humanos de carne y hueso.</p>
+        <p class="f-note">Esta noche nos acompaña la <b id="moon-foot" style="color:var(--g300);font-style:normal"></b> — buen momento para preguntar.</p>
+      </div>
+      <div>
+        <h4>El recorrido</h4>
+        <ul>
+          <li><a href="#dia">La carta del día</a></li>
+          <li><a href="#tirada">La tirada de tres cartas</a></li>
+          <li><a href="#arcanos">Arcanos destacados</a></li>
+          <li><a href="#mazo">El mazo completo</a></li>
+          <li><a href="#reserva">Reservar lectura</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Palabra de oráculo</h4>
+        <p style="margin-top:16px;font-size:18px;font-style:italic;line-height:1.6;color:var(--p300)">El tarot es un espejo, no una sentencia: muestra en voz baja lo que ya sabes. Úsalo para reflexionar, nunca para decidir por ti.</p>
+        <p class="f-note"><span class="fd" style="font-size:11px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--g300)">Pagos</span><br/>SumUp · Visa · Mastercard · Apple Pay · Google Pay</p>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© <span id="year"></span> Arcana · Hecho a la luz de las velas</span>
+      <span>78 cartas <i>✳</i> 4 elementos <i>✳</i> 1 destino</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ MODAL DE PAGO ══ -->
+<div class="overlay" id="pay" hidden>
+  <button class="bg" onclick="closePay()"></button>
+  <div class="panel">
+    <button class="x" onclick="closePay()" aria-label="Cerrar">✕</button>
+    <div class="panel-in" id="pay-in"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL DE CARTA ══ -->
+<div class="overlay" id="card-modal" hidden>
+  <button class="bg" onclick="closeCard()"></button>
+  <div class="panel" style="max-width:780px">
+    <button class="x" onclick="closeCard()" aria-label="Cerrar">✕</button>
+    <div class="panel-in" id="card-in" style="display:grid;gap:28px"></div>
+  </div>
+</div>
+
+<noscript><p style="padding:120px 24px;text-align:center;font-style:italic">El oráculo necesita JavaScript para barajar las cartas. Actívalo y vuelve.</p></noscript>
+
+<script>
+"use strict";
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ════════ 1 · EL MAZO (78 cartas) ════════ */
+const GLYPH = {
+  spiral:'<path d="M50 50c0-5 8-5 8 0 0 9-15 9-15 0 0-13 22-13 22 0 0 17-29 17-29 0 0-21 36-21 36 0"/>',
+  infinity:'<path d="M50 50c-8-13-29-13-29 0s21 13 29 0c8-13 29-13 29 0s-21 13-29 0z"/>',
+  moon:'<path d="M60 16a36 36 0 1 0 0 68 28 28 0 1 1 0-68z"/><circle cx="66" cy="30" r="2.5" fill="currentColor" stroke="none"/><circle cx="76" cy="44" r="1.8" fill="currentColor" stroke="none"/>',
+  crown:'<path d="M24 70l6-32 13 16 7-24 7 24 13-16 6 32z"/><path d="M28 78h44"/><circle cx="50" cy="62" r="3"/>',
+  key:'<circle cx="50" cy="28" r="14"/><path d="M50 42v38M50 66h12M50 78h9"/>',
+  heart:'<path d="M50 78C28 62 20 44 30 34c8-8 18-2 20 6 2-8 12-14 20-6 10 10 2 28-20 44z"/>',
+  flame:'<path d="M50 16c3 14 21 21 21 40a21 21 0 1 1-42 0c0-13 9-17 11-27 2 9 10 11 10-13z"/><path d="M50 76c-5-6-4-13 0-18 4 5 5 12 0 18z"/>',
+  lantern:'<path d="M50 12v10"/><rect x="36" y="22" width="28" height="44" rx="7"/><path d="M50 58c-6-7-5-15 0-21 5 6 6 14 0 21z"/><path d="M42 66v12M58 66v12M38 84h24"/>',
+  scale:'<path d="M50 16v60M32 76h36M22 32h56"/><path d="M22 32l-8 18M22 32l8 18M12 50a10 10 0 0 0 20 0"/><path d="M78 32l-8 18M78 32l8 18M68 50a10 10 0 0 0 20 0"/><circle cx="50" cy="24" r="4"/>',
+  ankh:'<circle cx="50" cy="30" r="13"/><path d="M50 43v41M32 58h36"/>',
+  scythe:'<path d="M68 18a46 46 0 0 0-45 44l11 1a35 35 0 0 1 34-34z"/><path d="M30 60l36 26"/>',
+  chalice:'<path d="M28 22h44c0 21-9 33-22 33S28 43 28 22z"/><path d="M50 55v17M34 78c4-4 10-6 16-6s12 2 16 6"/><circle cx="50" cy="13" r="3" fill="currentColor" stroke="none"/>',
+  chain:'<ellipse cx="41" cy="40" rx="15" ry="21" transform="rotate(-24 41 40)"/><ellipse cx="59" cy="60" rx="15" ry="21" transform="rotate(-24 59 60)"/>',
+  tower:'<path d="M40 82l5-50h10l5 50z"/><path d="M36 32h28M42 24v8M50 22v10M58 24v8"/><path d="M66 8l-10 18h8L52 48"/><path d="M48 62h4"/>',
+  star:'<path d="M50 12l7 27 27 11-27 11-7 27-7-27-27-11 27-11z"/><circle cx="50" cy="50" r="4" fill="currentColor" stroke="none"/>',
+  eye:'<path d="M12 50c13-19 63-19 76 0-13 19-63 19-76 0z"/><circle cx="50" cy="50" r="11"/><circle cx="50" cy="50" r="4" fill="currentColor" stroke="none"/><path d="M50 24v-7M32 28l-4-6M68 28l4-6"/>',
+  world:'<ellipse cx="50" cy="50" rx="25" ry="34"/><circle cx="50" cy="40" r="6"/><path d="M50 46c-6 8-8 16-4 24M50 46c6 8 8 16 4 24"/><path d="M16 16l3 6 6 3-6 3-3 6-3-6-6-3 6-3zM84 16l3 6 6 3-6 3-3 6-3-6-6-3 6-3zM16 84l3-6 6-3-6-3-3-6-3 6-6 3 6 3zM84 84l3-6 6-3-6-3-3-6-3 6-6 3 6 3z"/>',
+  sword:'<path d="M50 10l7 11v33l-7 9-7-9V21z"/><path d="M33 55h34M50 55v18"/><circle cx="50" cy="78" r="4.5"/>',
+  wand:'<path d="M28 82L64 26"/><path d="M64 26c1-9 9-13 15-10-7 3-9 8-9 13"/><path d="M52 44c0-6 5-9 10-8-4 3-5 6-5 10"/><circle cx="36" cy="70" r="3"/>',
+  pentacle:'<circle cx="50" cy="50" r="28"/><path d="M50 27l13.5 41.6-35.4-25.7h43.8L36.5 68.6z"/>'
+};
+function glyphIn(id){
+  if(id==="flower"){ let s=""; for(const r of [0,60,120,180,240,300]) s+=`<path transform="rotate(${r} 50 50)" d="M50 22c9 11 9 22 0 28-9-6-9-17 0-28z"/>`; return s+'<circle cx="50" cy="50" r="5"/>'; }
+  if(id==="wheel"){ let s='<circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="8"/>'; for(const a of [0,45,90,135,180,225,270,315]) s+=`<line transform="rotate(${a} 50 50)" x1="50" y1="20" x2="50" y2="42"/>`; return s; }
+  if(id==="sun"){ let s='<circle cx="50" cy="50" r="17"/>'; for(let i=0;i<12;i++){ const a=i*30*Math.PI/180, r2=i%2?30:36; s+=`<line x1="${50+24*Math.cos(a)}" y1="${50+24*Math.sin(a)}" x2="${50+r2*Math.cos(a)}" y2="${50+r2*Math.sin(a)}"/>`; } return s; }
+  return GLYPH[id];
+}
+
+const MAJOR=[["0","El Loco","spiral"],["I","El Mago","infinity"],["II","La Sacerdotisa","moon"],["III","La Emperatriz","flower"],["IV","El Emperador","crown"],["V","El Hierofante","key"],["VI","Los Enamorados","heart"],["VII","El Carro","wheel"],["VIII","La Fuerza","flame"],["IX","El Ermitaño","lantern"],["X","La Rueda de la Fortuna","wheel"],["XI","La Justicia","scale"],["XII","El Colgado","ankh"],["XIII","La Muerte","scythe"],["XIV","La Templanza","chalice"],["XV","El Diablo","chain"],["XVI","La Torre","tower"],["XVII","La Estrella","star"],["XVIII","La Luna","moon"],["XIX","El Sol","sun"],["XX","El Juicio","eye"],["XXI","El Mundo","world"]];
+const M_TXT={
+"El Loco":[["Comienzos","Espontaneidad","Fe en el camino"],["Imprudencia","Riesgo ciego","Ingenuidad"],"El viajero que salta al vacío con el corazón abierto. La confianza pura en lo desconocido y la libertad de no llevar más equipaje que el alma."],
+"El Mago":[["Voluntad","Manifestación","Poder personal"],["Manipulación","Talento sin usar","Engaño"],"Sobre su mesa descansan los cuatro elementos: copa, espada, basto y oro. Lo que imaginas con claridad, puedes crearlo con las manos."],
+"La Sacerdotisa":[["Intuición","Misterio","Sabiduría interior"],["Secretos","Ruido mental","Desconexión"],"Guardiana del velo entre lo visible y lo invisible. No habla: susurra. Su saber no se estudia, se recuerda."],
+"La Emperatriz":[["Abundancia","Creatividad","Nutrición"],["Bloqueo creativo","Sobreprotección","Vacío"],"La tierra fértil en persona. Todo lo que toca florece: proyectos, vínculos, ideas. Crear es su forma de amar."],
+"El Emperador":[["Estructura","Autoridad","Estabilidad"],["Rigidez","Control excesivo","Tiranía"],"El arquitecto del orden. Construye muros no para encerrar, sino para que dentro crezca un reino seguro."],
+"El Hierofante":[["Tradición","Enseñanza","Guía espiritual"],["Dogma","Rebeldía","Conformismo"],"El puente entre la sabiduría antigua y quien está listo para recibirla. Entrega las llaves, pero la puerta la abres tú."],
+"Los Enamorados":[["Unión","Elección del corazón","Armonía"],["Desequilibrio","Duda","Ruptura"],"Dos caminos, un solo corazón. Más que amor, habla de la elección que te define cuando eliges desde lo verdadero."],
+"El Carro":[["Determinación","Victoria","Impulso"],["Falta de rumbo","Obstáculos","Freno"],"Dos fuerzas opuestas tirando en perfecta armonía. El triunfo no llega por la fuerza, sino por la dirección."],
+"La Fuerza":[["Coraje sereno","Paciencia","Compasión"],["Inseguridad","Miedo","Dureza"],"No doma al león con cadenas, sino con la mirada. La fuerza verdadera es la ternura que no se rinde."],
+"El Ermitaño":[["Introspección","Búsqueda interior","Soledad fértil"],["Aislamiento","Parálisis","Rechazo"],"Sube a la montaña con una lámpara que ilumina tres pasos. No huye del mundo: baja a él con la respuesta."],
+"La Rueda de la Fortuna":[["Ciclos","Destino","Cambio de suerte"],["Resistencia","Racha adversa","Repetición"],"Gira sin pedir permiso. Lo que sube, baja; lo que baja, sube. La única sabiduría es no aferrarse al radio."],
+"La Justicia":[["Equilibrio","Verdad","Causa y efecto"],["Injusticia","Evasión","Juicio duro"],"La espada corta lo falso y la balanza pesa lo verdadero. Cada acto siembra exactamente lo que cosecha."],
+"El Colgado":[["Pausa sagrada","Nueva perspectiva","Sacrificio"],["Estancamiento","Victimismo","Espera vana"],"Suspendido entre el cielo y la tierra, ve el mundo al revés y por fin lo entiende. A veces rendirse es avanzar."],
+"La Muerte":[["Transformación","Final necesario","Renacimiento"],["Resistencia al cambio","Miedo","Duelo estancado"],"No es un final: es una puerta. Siega lo que ya cumplió su ciclo para que la tierra quede libre para lo nuevo."],
+"La Templanza":[["Alquimia","Moderación","Paciencia"],["Exceso","Impaciencia","Desarmonía"],"Vierte el agua de una copa a otra sin derramar una gota. Mezcla opuestos hasta convertirlos en oro líquido."],
+"El Diablo":[["Sombra","Deseo","Ataduras"],["Liberación","Desapego","Verdad incómoda"],"Las cadenas que ata están flojas: podrías quitártelas cuando quisieras. Señala lo que te seduce y te encadena a la vez."],
+"La Torre":[["Revelación","Sacudida","Caída de lo falso"],["Desastre evitado","Miedo al cambio","Ruina lenta"],"El rayo solo derriba lo que ya no se sostenía en verdad. Duele un instante; libera para siempre."],
+"La Estrella":[["Esperanza","Sanación","Inspiración"],["Desánimo","Fe perdida","Desconexión"],"Después de la tormenta, una luz serena vierte sus aguas sobre la tierra. Vuelve a creer: el cielo sigue de tu lado."],
+"La Luna":[["Ilusión","Sueños","Intuición profunda"],["Confusión","Engaño","Ansiedad"],"Bajo su luz plateada nada es lo que parece. Camina despacio entre sombras: tu intuición es el único mapa fiable."],
+"El Sol":[["Alegría","Éxito","Vitalidad"],["Optimismo apagado","Ego","Verdad a medias"],"La carta más luminosa del mazo. Calienta, revela y celebra: lo que estaba oculto florece a plena luz."],
+"El Juicio":[["Despertar","Llamada interior","Renacer"],["Culpa","Autoexigencia","Sordera interior"],"Suena la trompeta y los que dormían despiertan. No es un veredicto: es una invitación a vivir lo que viniste a vivir."],
+"El Mundo":[["Culminación","Plenitud","Viaje completado"],["Cierre incompleto","Estancamiento final","Vértigo"],"La danzarina gira dentro de la corona de laurel. El ciclo se cierra perfecto, y al cerrar se abre otro mayor."]};
+
+const SUITS=[["copas","Copas","de Copas","Agua","chalice","las emociones, el amor y los vínculos"],["espadas","Espadas","de Espadas","Aire","sword","la mente, la palabra y la verdad"],["bastos","Bastos","de Bastos","Fuego","wand","la pasión, la creatividad y la acción"],["oros","Oros","de Oros","Tierra","pentacle","el trabajo, el cuerpo y la prosperidad"]];
+const RANKS=[["A","A","As",["Regalo puro","Comienzo"],["Potencial bloqueado","Oferta que se escapa"],"una semilla perfecta: el inicio absoluto"],["II","II","Dos",["Equilibrio","Primer intercambio"],["Duda","Desunión"],"el primer encuentro entre dos fuerzas que se miden"],["III","III","Tres",["Crecimiento","Celebración"],["Exceso","Tercero en discordia"],"la chispa que ya es fuego y se comparte"],["IV","IV","Cuatro",["Estabilidad","Refugio"],["Estancamiento","Apego rígido"],"cuatro muros firmes donde descansar y ordenar"],["V","V","Cinco",["Crisis","Lección"],["Pérdida superada","Reconciliación"],"el conflicto que rompe para enseñar"],["VI","VI","Seis",["Armonía","Dar y recibir"],["Desequilibrio","Deuda pendiente"],"la balanza que vuelve a su centro"],["VII","VII","Siete",["Desafío","Trabajo interior"],["Autoengaño","Rendirse pronto"],"la prueba que separa a quien desea de quien se compromete"],["VIII","VIII","Ocho",["Maestría","Movimiento"],["Bloqueo","Repetición vacía"],"el oficio dominado que avanza con ritmo propio"],["IX","IX","Nueve",["Culminación","Abundancia cercana"],["Casi y no","Soledad en la cima"],"la cima a un solo paso, con todo lo aprendido a la espalda"],["X","X","Diez",["Plenitud","Ciclo completo"],["Exceso de carga","Final pesado"],"el ciclo lleno hasta el borde, listo para soltarse"],["S","S","Sota",["Mensaje","Aprendiz"],["Noticias confusas","Inmadurez"],"la noticia que llega y el aprendiz que escucha"],["C","C","Caballo",["Movimiento","Búsqueda"],["Prisa","Dirección errante"],"el jinete que parte con el viento a favor"],["Q","Q","Reina",["Receptividad","Dominio interior"],["Absorción emocional","Coraza"],"el trono sereno de quien gobierna desde dentro"],["K","K","Rey",["Liderazgo","Dominio exterior"],["Autoritarismo","Peso del trono"],"la corona madura de quien ya sabe mandar y servir"]];
+
+const DECK=MAJOR.map(([n,name,glyph])=>({id:"m"+n,name,numeral:n,suit:"major",arcana:"major",glyph,upright:M_TXT[name][0],reversed:M_TXT[name][1],description:M_TXT[name][2]}));
+for(const [suit,sing,plur,element,glyph,ground] of SUITS) for(const [num,letter,rname,up,rev,idea] of RANKS)
+  DECK.push({id:suit+num,name:`${rname} ${plur}`,numeral:letter,suit,arcana:"minor",element,glyph,upright:up,reversed:rev,description:`En el terreno de ${ground}, el ${rname} anuncia ${idea}.`});
+
+const SUIT_LABEL={major:"Arcanos Mayores",copas:"Copas · Agua",espadas:"Espadas · Aire",bastos:"Bastos · Fuego",oros:"Oros · Tierra"};
+const R2N={A:1,II:2,III:3,IV:4,V:5,VI:6,VII:7,VIII:8,IX:9,X:10};
+const PIPS={1:[[.5,.5]],2:[[.5,.18],[.5,.82]],3:[[.5,.15],[.5,.5],[.5,.85]],4:[[.28,.22],[.72,.22],[.28,.78],[.72,.78]],5:[[.28,.22],[.72,.22],[.5,.5],[.28,.78],[.72,.78]],6:[[.28,.16],[.72,.16],[.28,.5],[.72,.5],[.28,.84],[.72,.84]],7:[[.28,.16],[.72,.16],[.5,.33],[.28,.5],[.72,.5],[.28,.84],[.72,.84]],8:[[.28,.12],[.72,.12],[.28,.37],[.72,.37],[.28,.63],[.72,.63],[.28,.88],[.72,.88]],9:[[.25,.14],[.5,.14],[.75,.14],[.25,.5],[.5,.5],[.75,.5],[.25,.86],[.5,.86],[.75,.86]],10:[[.28,.12],[.72,.12],[.5,.25],[.28,.38],[.72,.38],[.28,.62],[.72,.62],[.5,.75],[.28,.88],[.72,.88]]};
+const shuffle=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
+
+/* ════════ 2 · DIBUJO DE CARTAS (SVG) ════════ */
+let UID=0;
+function backSVG(){
+  const u=++UID;
+  return `<svg viewBox="0 0 240 360" role="img" aria-label="Dorso de carta">
+  <defs><linearGradient id="bb${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#221838"/><stop offset="1" stop-color="#140e22"/></linearGradient>
+  <pattern id="sp${u}" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M15 6l2 5.5L22.5 15 17 17l-2 5.5L13 17l-5.5-2L13 13.5z" fill="none" stroke="#8f6f3a" stroke-width=".8" opacity=".55" transform="scale(.72) translate(6 6)"/><circle cx="3" cy="24" r=".9" fill="#b8934f" opacity=".5"/></pattern></defs>
+  <rect x="2" y="2" width="236" height="356" rx="14" fill="url(#bb${u})"/><rect x="2" y="2" width="236" height="356" rx="14" fill="url(#sp${u})"/>
+  <rect x="2" y="2" width="236" height="356" rx="14" fill="none" stroke="#b8934f" stroke-width="2.5"/>
+  <rect x="12" y="12" width="216" height="336" rx="9" fill="none" stroke="#d9b36c" opacity=".6"/>
+  <rect x="20" y="20" width="200" height="320" rx="6" fill="none" stroke="#8f6f3a" stroke-width=".8" stroke-dasharray="1 5" opacity=".9"/>
+  <circle cx="120" cy="180" r="66" fill="none" stroke="#d9b36c" stroke-width="1.2" opacity=".7"/>
+  <circle cx="120" cy="180" r="58" fill="none" stroke="#8f6f3a" stroke-width=".8" stroke-dasharray="3 5"/>
+  <path d="M132 148a36 36 0 1 0 0 64 29 29 0 1 1 0-64z" fill="none" stroke="#f0d49a" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M146 160l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#d9b36c"/>
+  <circle cx="98" cy="160" r="1.6" fill="#d9b36c"/><circle cx="104" cy="206" r="1.3" fill="#d9b36c"/>
+  ${[[26,26],[214,26],[26,334],[214,334]].map(([x,y])=>`<path transform="translate(${x} ${y})" d="M0-8L2-2 8 0 2 2 0 8-2 2-8 0-2-2z" fill="none" stroke="#b8934f" stroke-width="1.2"/>`).join("")}
+  </svg>`;
+}
+function faceSVG(c){
+  const u=++UID, pip=R2N[c.numeral], court=c.arcana==="minor"&&!pip, fs=c.name.length>14?12.5:15;
+  const fleur=`<path transform="translate(26 26)" d="M0-9L2.4-2.4 9 0 2.4 2.4 0 9-2.4 2.4-9 0-2.4-2.4z" fill="none" stroke="#b8934f" stroke-width="1.4" opacity=".9"/>
+  <path transform="translate(214 26)" d="M0-9L2.4-2.4 9 0 2.4 2.4 0 9-2.4 2.4-9 0-2.4-2.4z" fill="none" stroke="#b8934f" stroke-width="1.4" opacity=".9"/>
+  <path transform="translate(26 334)" d="M0-9L2.4-2.4 9 0 2.4 2.4 0 9-2.4 2.4-9 0-2.4-2.4z" fill="none" stroke="#b8934f" stroke-width="1.4" opacity=".9"/>
+  <path transform="translate(214 334)" d="M0-9L2.4-2.4 9 0 2.4 2.4 0 9-2.4 2.4-9 0-2.4-2.4z" fill="none" stroke="#b8934f" stroke-width="1.4" opacity=".9"/>`;
+  let ticks=""; for(let i=0;i<16;i++){const a=i*22.5*Math.PI/180;ticks+=`<line x1="${120+72*Math.cos(a)}" y1="${180+72*Math.sin(a)}" x2="${120+66*Math.cos(a)}" y2="${180+66*Math.sin(a)}" stroke="#d9b36c" opacity=".5"/>`;}
+  let mid="";
+  if(c.arcana==="major") mid=`<svg x="63" y="123" width="114" height="114" viewBox="0 0 100 100"><g fill="none" stroke="#d9b36c" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">${glyphIn(c.glyph)}</g></svg>`;
+  else if(pip){ const s=pip<=1?92:pip<=3?60:pip<=6?46:34;
+    mid=PIPS[pip].map(([fx,fy])=>`<svg x="${62+fx*116-s/2}" y="${110+fy*140-s/2}" width="${s}" height="${s}" viewBox="0 0 100 100"><g fill="none" stroke="#d9b36c" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round">${glyphIn(c.glyph)}</g></svg>`).join(""); }
+  else mid=`<text x="120" y="140" text-anchor="middle" font-family="Cinzel,serif" font-weight="700" font-size="30" fill="#f0d49a">${c.numeral}</text>
+    <svg x="75" y="148" width="90" height="90" viewBox="0 0 100 100"><g fill="none" stroke="#d9b36c" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round">${glyphIn(c.glyph)}</g></svg>
+    <path d="M88 246h64" stroke="#b8934f" opacity=".7"/>`;
+  return `<svg viewBox="0 0 240 360" role="img" aria-label="${c.name}">
+  <defs><linearGradient id="fb${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#241a3a"/><stop offset=".55" stop-color="#191128"/><stop offset="1" stop-color="#120c1e"/></linearGradient>
+  <radialGradient id="fh${u}"><stop offset="0" stop-color="#d9b36c" stop-opacity=".22"/><stop offset=".7" stop-color="#d9b36c" stop-opacity=".05"/><stop offset="1" stop-color="#d9b36c" stop-opacity="0"/></radialGradient></defs>
+  <rect x="2" y="2" width="236" height="356" rx="14" fill="url(#fb${u})"/><rect x="2" y="2" width="236" height="356" rx="14" fill="none" stroke="#8f6f3a" stroke-width="2.5"/>
+  <rect x="11" y="11" width="218" height="338" rx="9" fill="none" stroke="#d9b36c" opacity=".55"/>${fleur}
+  <text x="120" y="52" text-anchor="middle" font-family="Cinzel,serif" font-weight="700" font-size="25" fill="#f0d49a" letter-spacing="2">${c.numeral}</text>
+  <path d="M84 64h72" stroke="#b8934f" opacity=".7"/><circle cx="120" cy="64" r="2.4" fill="#d9b36c"/>
+  <circle cx="120" cy="180" r="82" fill="url(#fh${u})"/><circle cx="120" cy="180" r="72" fill="none" stroke="#d9b36c" stroke-width="1.2" opacity=".65"/>
+  <circle cx="120" cy="180" r="79" fill="none" stroke="#8f6f3a" stroke-width=".8" stroke-dasharray="2 6" opacity=".8"/>${ticks}${mid}
+  <text x="120" y="306" text-anchor="middle" font-family="Cinzel,serif" font-weight="600" font-size="${fs}" fill="#efe6d4" letter-spacing="1.5">${c.name.toUpperCase()}</text>
+  <text x="120" y="324" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic" font-size="11" fill="#9d8fb5" letter-spacing="2">${c.arcana==="major"?"· arcano mayor ·":`· ${c.element} ·`}</text>
+  <path d="M96 336l4-4 4 4-4 4z" fill="#d9b36c" transform="translate(16 0)"/><path d="M96 336l4-4 4 4-4 4z" fill="none" stroke="#b8934f" transform="translate(-16 0)"/>
+  </svg>`;
+}
+
+/* ════════ 3 · FASE LUNAR ════════ */
+const SYN=29.53058867, NEW0=Date.UTC(2000,0,6,18,14);
+const MOON_NAMES=["Luna nueva","Creciente iluminante","Cuarto creciente","Gibosa creciente","Luna llena","Gibosa menguante","Cuarto menguante","Menguante balsámica"];
+function moonNow(){const f=(((Date.now()-NEW0)/864e5)%SYN+SYN)%SYN/SYN;return{f,name:MOON_NAMES[Math.round(f*8)%8]};}
+function moonSVG(f){
+  const wax=f<=.5, illum=(1-Math.cos(2*Math.PI*f))/2, rx=Math.max(.01,Math.abs(Math.cos(2*Math.PI*f))*8.4);
+  const bul=(wax&&illum<.5)||(!wax&&illum>.5);
+  const d=`M10 1.6 A8.4 8.4 0 0 ${wax?1:0} 10 18.4 A${rx.toFixed(2)} 8.4 0 0 ${bul?0:1} 10 1.6 Z`;
+  return `<svg viewBox="0 0 20 20" width="30" height="30" style="display:block"><circle cx="10" cy="10" r="8.4" fill="#241a3a" stroke="#8f6f3a"/>${illum>.02?`<path d="${d}" fill="#f0d49a" opacity=".92"/>`:""}</svg>`;
+}
+
+/* ════════ 4 · ARRANQUE DE LA PÁGINA ════════ */
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+$("#year").textContent=new Date().getFullYear();
+$("#today").textContent=new Date().toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+{const m=moonNow();$("#moon-name").textContent=m.name;$("#moon-svg").innerHTML=moonSVG(m.f);$("#moon-foot").textContent=m.name.toLowerCase();
+ /* luna + fecha en el menú móvil */
+ $("#mmoon-ic").innerHTML=moonSVG(m.f).replace('width="30" height="30"','width="18" height="18"');
+ $("#mmoon-txt").textContent=m.name+" · "+new Date().toLocaleDateString("es-ES",{day:"numeric",month:"long"});}
+
+/* ── menú móvil ── */
+{const burger=$("#burger"),mm=$("#mmenu"),ic=$("#burger-ic");
+ const OPEN='<path d="M6 6l12 12M18 6L6 18"/>',SHUT='<path d="M4 7h16M4 12h16M4 17h10"/>';
+ const set=o=>{mm.classList.toggle("open",o);mm.setAttribute("aria-hidden",String(!o));burger.setAttribute("aria-expanded",String(o));ic.innerHTML=o?OPEN:SHUT;document.body.style.overflow=o?"hidden":"";};
+ burger.onclick=()=>set(!mm.classList.contains("open"));
+ mm.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>set(false)));
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")set(false);});
+ addEventListener("resize",()=>{if(innerWidth>=900)set(false);});}
+
+/* abanico del hero */
+{const fan=$("#fan");for(let i=-4;i<=4;i++){const d=document.createElement("div");d.className="c";d.style.transform=`rotate(${i*9}deg) translateY(${i*i*7}px)`;d.style.zIndex=10+i;d.innerHTML=backSVG();fan.insertBefore(d,fan.lastElementChild);}}
+
+/* revelado al hacer scroll */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("on");io.unobserve(e.target);}}),{threshold:.12,rootMargin:"0px 0px -8% 0px"});
+document.querySelectorAll(".reveal").forEach(el=>{ if(RM){el.classList.add("on");} else io.observe(el); });
+
+/* ════════ 5 · CARTA DEL DÍA ════════ */
+{const d=new Date(), key=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(), card=DECK[key%DECK.length];
+ $("#day-card").innerHTML=`<div class="card3d-in"><div class="face">${backSVG()}</div><div class="face face-front">${faceSVG(card)}</div></div>`;
+ const flip=()=>{$("#day-card").classList.toggle("flipped");const on=$("#day-card").classList.contains("flipped");
+   $("#day-cap").textContent=on?card.name:"un secreto por revelar";
+   $("#day-msg").innerHTML=on?`<div class="day-msg deal"><b>${esc(card.name)}</b><p>${esc(card.description)}</p><div class="chips">${card.upright.map(k=>`<span class="chip">${esc(k)}</span>`).join("")}</div></div>`:"";};
+ $("#day-card").addEventListener("click",flip);
+ $("#day-card").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();flip();}});}
+
+/* ════════ 6 · LA TIRADA ════════ */
+const POS=["Pasado","Presente","Futuro"];
+const OPEN=[n=>`En tu pasado, ${n} recuerda una raíz que aún te alimenta`,n=>`Tu pasado habla a través de ${n}`,n=>`Detrás de ti, ${n} marca lo que ya fue integrado`];
+const MID=[n=>`en el presente, ${n} te pide habitar este instante con plena conciencia`,n=>`hoy, ${n} ilumina el centro exacto de tu pregunta`,n=>`ahora mismo, ${n} sostiene el eje de lo que vives`];
+const CLOSE=[n=>`y hacia el futuro, ${n} abre una puerta que solo se cruza caminando`,n=>`mientras tanto, ${n} dibuja el horizonte hacia el que te inclinas`,n=>`y delante, ${n} espera con la paciencia de lo inevitable`];
+let spread=[],picked=[],drawn=[],flipped=0,busy=false;
+
+function renderSlots(){
+  $("#spread").innerHTML=POS.map((p,i)=>{const d=drawn[i],on=flipped>i;
+    const inner=d?`<div class="card3d-in"><div class="face empty"><b>${p}</b><i>${d.rev?"invertida":"al derecho"}</i></div><div class="face face-front">${faceSVG(d.card).replace("<svg ",`<svg class="${d.rev?"rev":""}" `)}</div></div>`
+    :`<div class="card3d-in"><div class="face empty"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8f6f3a" stroke-width="1.4"><path d="M12 2l2.6 7.4L22 12l-7.4 2.6L12 22l-2.6-7.4L2 12l7.4-2.6z"/></svg><b>${p}</b><i>esperando…</i></div></div>`;
+    const name=on&&d?`<div class="deal"><b>${esc(d.card.name)}</b><div class="chips" style="justify-content:center">${(d.rev?d.card.reversed:d.card.upright).map(k=>`<span class="chip ${d.rev?"rose":""}">${esc(k)}</span>`).join("")}</div></div>`:`<span class="fd" style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--p400)">${p}</span>`;
+    return `<div class="slot reveal on"><div class="card3d ${on&&d?"flipped":""}">${inner}</div><div class="slot-name">${name}</div></div>`;}).join("");
+}
+function renderAction(){
+  const A=$("#action");
+  if(busy){A.innerHTML=`<div class="shuf">${[0,1,2,3].map(i=>`<div style="--x:${i%2?14:-14}px;--d:${i*.06}s;opacity:${.5+i*.14};z-index:${i}">${backSVG()}</div>`).join("")}</div><p class="fd" style="font-size:13px;letter-spacing:.35em;text-transform:uppercase;color:var(--g300)">las cartas se mezclan…</p>`;return;}
+  if(!spread.length){A.innerHTML=`<div class="gold-rule" style="max-width:520px;margin:0 auto 28px"></div><button class="btn" id="shuffle"><span class="shine"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h4l10 10h4M3 17h4l2.5-2.5M13.5 9.5L17 7h4M17 3l4 4-4 4M17 13l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>Barajar el mazo</button><p style="margin-top:18px;font-style:italic;color:var(--p300)">El azar no existe para quien sabe mirar: cada carta ya llevaba tu nombre.</p>`;
+    $("#shuffle").onclick=startShuffle;return;}
+  if(drawn.length<3){A.innerHTML=`<p class="fd" style="font-size:14px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--g300);margin-bottom:6px">Elige ${3-drawn.length} carta${3-drawn.length===1?"":"s"} más</p><div class="pick-grid">${spread.map((s,i)=>`<button class="pick deal" style="--rot:${s.rot}deg;--d:${i*45}ms;--r:${s.rot}deg" data-i="${i}" ${picked.includes(i)?"disabled":""} aria-label="Elegir carta ${i+1}">${backSVG()}</button>`).join("")}</div>`;
+    A.querySelectorAll(".pick").forEach(b=>b.onclick=()=>pick(+b.dataset.i));return;}
+  if(flipped<3){A.innerHTML=`<div class="msg-box"><p class="kicker">El mensaje del mazo</p><p class="lead" style="margin-top:16px;font-style:italic;color:var(--p300);animation:${RM?"none":"pulse 1.4s ease-in-out infinite"}">Las cartas se muestran una a una…</p></div><style>@keyframes pulse{50%{opacity:.5}}</style>`;return;}
+  const t=drawn.some(d=>d.rev)?"Una carta invertida no es un mal augurio: es una energía que pide ser mirada desde otro ángulo.":"Las tres miran al derecho: el camino está despejado para quien se atreva a recorrerlo.";
+  const msg=`${OPEN[drawn[0].card.id.length%3](drawn[0].card.name)}; ${MID[drawn[1].card.id.length%3](drawn[1].card.name)}; ${CLOSE[drawn[2].card.id.length%3](drawn[2].card.name)}. ${t}`;
+  A.innerHTML=`<div class="msg-box deal"><p class="kicker">El mensaje del mazo</p><p class="lead" style="margin-top:16px">${esc(msg)}</p>${drawn.map((d,i)=>`<div class="msg-row"><b>${POS[i]} — ${esc(d.card.name)}${d.rev?" (invertida)":""}: </b><i>${esc(d.card.description)}</i></div>`).join("")}</div>
+  <div class="deal" style="display:flex;flex-wrap:wrap;justify-content:center;gap:20px;margin-top:28px;align-items:center">
+    <button class="btn-ghost" onclick="startShuffle()">↺ Nueva tirada</button>
+    <a class="btn" href="#reserva"><span class="shine"></span>Reservar lectura guiada →</a>
+  </div>`;
+}
+function startShuffle(){
+  picked=[];drawn=[];flipped=0;spread=[];busy=true;renderSlots();renderAction();
+  setTimeout(()=>{spread=shuffle(DECK).slice(0,12).map(card=>({card,rot:Math.random()*10-5}));busy=false;renderAction();},RM?100:950);
+}
+function pick(i){
+  if(busy||picked.includes(i)||drawn.length>=3)return;
+  picked.push(i);drawn.push({card:spread[i].card,rev:Math.random()<.32});
+  renderAction();
+  if(drawn.length===3){renderSlots();setTimeout(()=>{[1,2,3].forEach((n,j)=>setTimeout(()=>{flipped=n;renderSlots();},RM?50:400+j*750));},500);}
+}
+renderSlots();renderAction();
+
+/* ════════ 7 · ARCANOS DESTACADOS ════════ */
+{const FEAT=[["0","El Loco","spiral","Fe","Abre el mazo y lo cierra. El Loco camina al borde del abismo no por descuido, sino porque sabe que caer también es una forma de volar."],
+ ["I","El Mago","infinity","Voluntad","«Como es arriba, es abajo.» Con una mano toma la chispa del cielo y con la otra la siembra en la tierra. Todo lo que necesitas ya está sobre su mesa."],
+ ["II","La Sacerdotisa","moon","Intuición","Entre las columnas de la dualidad, ella guarda el pergamino que no se lee con los ojos. Su silencio responde más preguntas que cualquier oráculo."],
+ ["XVII","La Estrella","star","Esperanza","Cuando la Torre ha caído y el polvo se asienta, ella vierte sus aguas sobre el mundo. Es la promesa silenciosa de que la luz siempre vuelve."]];
+ $("#feat").innerHTML=FEAT.map(([n,name,g,word,lore],i)=>`<figure class="lamina reveal" style="--d:${i*130}ms"><span class="spark"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 7.4L22 12l-7.4 2.6L12 22l-2.6-7.4L2 12l7.4-2.6z"/></svg></span>
+ <div class="arco"><div class="arco-in"><svg viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${glyphIn(g)}</g></svg></div></div>
+ <figcaption><small>Arcano ${n} · ${word}</small><b>${name}</b><p>${lore}</p></figcaption></figure>`).join("");
+ document.querySelectorAll("#feat .reveal").forEach(el=>{ if(RM) el.classList.add("on"); else io.observe(el); });}
+
+/* ════════ 8 · GALERÍA DE LAS 78 ════════ */
+let filter="all";
+function renderFilters(){
+  const defs=[["all","Todo el mazo"],["major","Arcanos Mayores"],["copas","Copas"],["espadas","Espadas"],["bastos","Bastos"],["oros","Oros"]];
+  $("#filters").innerHTML=defs.map(([k,l])=>{const n=k==="all"?DECK.length:DECK.filter(c=>c.suit===k).length;
+    return `<button class="fbtn ${filter===k?"on":""}" data-k="${k}" aria-pressed="${filter===k}">${l}<em>${n}</em></button>`;}).join("");
+  $("#filters").querySelectorAll(".fbtn").forEach(b=>b.onclick=()=>{filter=b.dataset.k;renderFilters();renderGrid();});
+}
+function renderGrid(){
+  const cards=filter==="all"?DECK:DECK.filter(c=>c.suit===filter);
+  $("#ggrid").innerHTML=cards.map((c,i)=>`<button class="gcard deal" style="--rot:${((i%5)-2)*.6}deg;--d:${Math.min(i*14,420)}ms;--r:${(i%5)-2}deg" data-id="${c.id}" aria-label="Ver significado de ${esc(c.name)}">${faceSVG(c)}</button>`).join("");
+  $("#ggrid").querySelectorAll(".gcard").forEach(b=>b.onclick=()=>openCard(b.dataset.id));
+}
+function openCard(id){
+  const c=DECK.find(x=>x.id===id); if(!c)return;
+  const head=c.arcana==="major"?`Arcanos Mayores · Arcano ${c.numeral}`:`${SUIT_LABEL[c.suit]} · Arcano menor`;
+  $("#card-in").innerHTML=`<div style="display:grid;gap:28px;grid-template-columns:1fr;align-items:start" class="cm-grid">
+    <div style="max-width:230px;margin:0 auto;width:100%">${faceSVG(c)}</div>
+    <div><p class="kicker">${head}</p><h3 class="fd" style="font-size:30px;margin-top:8px">${esc(c.name)}</h3>
+    <p style="margin-top:16px;font-size:18px;font-style:italic;line-height:1.6;color:var(--parch)">${esc(c.description)}</p>
+    <div style="display:grid;gap:20px;margin-top:24px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+      <div><p class="fd" style="font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--g400)">Al derecho</p><div class="chips">${c.upright.map(k=>`<span class="chip">${esc(k)}</span>`).join("")}</div></div>
+      <div><p class="fd" style="font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--rose)">Invertida</p><div class="chips">${c.reversed.map(k=>`<span class="chip rose">${esc(k)}</span>`).join("")}</div></div>
+    </div>
+    <p style="margin-top:24px;padding-top:18px;border-top:1px solid rgba(143,111,58,.3);font-style:italic;color:var(--p300)">${c.element?`Pertenece al elemento ${c.element}. Medita con ella un minuto al día y observa qué se mueve.`:"Forma parte del viaje del héroe que recorre los 22 arcanos mayores. Su posición en tu tirada lo cambia todo."}</p>
+    </div></div>`;
+  $("#card-modal").hidden=false;document.body.style.overflow="hidden";
+}
+function closeCard(){$("#card-modal").hidden=true;document.body.style.overflow="";}
+renderFilters();renderGrid();
+
+/* ════════ 9 · RESERVA + PAGO SUMUP ════════ */
+const SUMUP="QVDJ846Y";
+const PLANS=[["express","Lectura Exprés",7.99,"20 minutos",["1 pregunta concreta","3 cartas","guía escrita"],""],
+ ["completa","Lectura Completa",14.99,"45 minutos",["Cruz celta (10 cartas)","sesión en directo","grabación + PDF"],"La más elegida"],
+ ["mazo","Mazo + Lectura",39.99,"45 min + envío",["mazo físico ilustrado (78)","Lectura Completa","envío incluido"],""]];
+const eur=n=>n.toFixed(2).replace(".",",");
+const sumupUrl=p=>`https://pay.sumup.com/b2c/${SUMUP}?amount=${p[2].toFixed(2)}&title=${encodeURIComponent(p[1]+" · Arcana")}&currency=EUR`;
+$("#plans").innerHTML=PLANS.map((p,i)=>`<article class="plan reveal ${p[5]?"star":""}" style="--d:${i*140}ms">${p[5]?`<span class="tag">✳ ${p[5]}</span>`:""}
+  <small>${p[3]}</small><h3>${p[1]}</h3><div class="price"><b>${eur(p[2])}</b><i>€</i></div>
+  <ul>${p[4].map(x=>`<li>${x}</li>`).join("")}</ul>
+  <button class="${p[5]?"btn wide":"ghost"}" data-i="${i}" style="margin-top:28px">${p[5]?"":`<span class="shine"></span>`}Reservar y pagar</button></article>`).join("");
+document.querySelectorAll("#plans .reveal").forEach(el=>{ if(RM) el.classList.add("on"); else io.observe(el); });
+let curPlan=null;
+document.querySelectorAll("#plans button[data-i]").forEach(b=>b.onclick=()=>{curPlan=PLANS[+b.dataset.i];renderPay("form");$("#pay").hidden=false;document.body.style.overflow="hidden";});
+function renderPay(step,email){
+  const p=curPlan;
+  if(step==="form"){
+    $("#pay-in").innerHTML=`<p class="kicker">Reserva tu lectura</p><h3 class="fd" style="font-size:24px;margin-top:8px">${p[1]}</h3>
+    <div class="sumrow"><div><span>Duración</span><b>${p[3]}</b></div><div><span>Incluye</span><b>${p[4].join(" · ")}</b></div><div class="tot"><span>Total</span><b>${eur(p[2])} €</b></div></div>
+    <label class="field"><span>Tu nombre</span><input id="f-name" placeholder="¿Cómo te llamamos en la sesión?"/></label>
+    <label class="field"><span>Correo electrónico *</span><input id="f-mail" type="email" placeholder="tu@correo.com"/></label>
+    <p class="err" id="f-err" hidden>Escribe un correo válido: ahí llegará tu lectura.</p>
+    <button class="wide" id="f-go">Pagar ${eur(p[2])} € con SumUp →</button>
+    <p class="safe">🔒 Pago seguro procesado por SumUp. Recibirás la confirmación por correo.</p>`;
+    $("#f-go").onclick=()=>{
+      const m=$("#f-mail").value.trim(),n=$("#f-name").value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)){$("#f-err").hidden=false;return;}
+      renderPay("proc");setTimeout(()=>{window.open(sumupUrl(p),"_blank","noopener");renderPay("done",m,n);if(!RM)confetti();},1000);
+    };
+  }else if(step==="proc"){
+    $("#pay-in").innerHTML=`<p class="kicker">Reserva tu lectura</p><h3 class="fd" style="font-size:24px;margin-top:8px">${p[1]}</h3>
+    <div class="sumrow"><div><span>Duración</span><b>${p[3]}</b></div><div class="tot"><span>Total</span><b>${eur(p[2])} €</b></div></div>
+    <button class="wide" disabled>Preparando el pago… ⟳</button><p class="safe">Conectando con SumUp…</p>`;
+  }else{
+    const first=(arguments[2]||"").split(" ")[0];
+    $("#pay-in").innerHTML=`<div class="thanks-pop">✓</div><h3 class="fd center" style="font-size:28px;margin-top:20px">¡Gracias${first?", "+esc(first):""}!</h3>
+    <p style="margin-top:12px;font-size:18px;font-style:italic;line-height:1.6;color:var(--parch);text-align:center">Tu <b style="color:var(--g300);font-style:normal">${p[1]}</b> está reservada. Termina el pago en la pestaña de SumUp y recibirás en <b style="color:var(--g300);font-style:normal">${esc(email)}</b> la confirmación con los detalles de tu sesión.</p>
+    <div class="steps"><p><i>1.</i> Completa el pago en SumUp (tarjeta, Apple Pay o Google Pay).</p><p><i>2.</i> Te escribiremos para acordar día y hora.</p><p style="margin:0"><i>3.</i> Prepara tu pregunta: el mazo ya te está esperando.</p></div>
+    <a class="wide" href="${sumupUrl(p)}" target="_blank" rel="noopener">Abrir pago en SumUp ↗</a>
+    <p style="margin-top:8px;text-align:center;font-size:13px;font-style:italic;color:var(--p400)">¿No se abrió la pestaña? Pulsa el botón dorado.</p>
+    <button class="ghost" onclick="closePay()">Volver al oráculo</button>`;
+  }
+}
+function closePay(){$("#pay").hidden=true;document.body.style.overflow="";}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closePay();closeCard();}});
+
+/* ════════ 10 · CONFETI + ESTRELLAS ════════ */
+function confetti(){
+  const cv=$("#confetti"),cx=cv.getContext("2d");cv.width=innerWidth;cv.height=innerHeight;
+  const cols=["#d9b36c","#f0d49a","#b8934f","#efe6d4"],ps=[];
+  for(let i=0;i<130;i++)ps.push({x:innerWidth/2,y:innerHeight*.6,vx:(Math.random()-.5)*11,vy:-Math.random()*11-4,g:.28,r:Math.random()*6+3,c:cols[i%4],a:Math.random()*Math.PI,vr:(Math.random()-.5)*.3,life:90+Math.random()*40});
+  (function tick(){cx.clearRect(0,0,cv.width,cv.height);let alive=false;
+    for(const p of ps){if(p.life<=0)continue;alive=true;p.life--;p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.a+=p.vr;
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.a);cx.globalAlpha=Math.min(1,p.life/40);cx.fillStyle=p.c;cx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);cx.restore();}
+    if(alive)requestAnimationFrame(tick);else cx.clearRect(0,0,cv.width,cv.height);})();
+}
+if(!RM){
+  const cv=$("#stars"),cx=cv.getContext("2d");let st=[];
+  const seed=()=>{const d=Math.min(devicePixelRatio||1,2);cv.width=innerWidth*d;cv.height=innerHeight*d;cx.setTransform(d,0,0,d,0,0);
+    st=Array.from({length:Math.min(140,Math.floor(innerWidth*innerHeight/11000))},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.3+.3,b:Math.random()*.35+.1,a:Math.random()*.5+.2,s:Math.random()*.9+.25,p:Math.random()*6.28,g:Math.random()<.3}));};
+  const paint=t=>{cx.clearRect(0,0,innerWidth,innerHeight);
+    for(const s of st){const al=s.b+s.a*(.5+.5*Math.sin(t*.001*s.s+s.p));cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.28);cx.fillStyle=s.g?`rgba(240,212,154,${al})`:`rgba(214,205,235,${al*.8})`;cx.fill();
+      if(s.r>1.1){cx.strokeStyle=`rgba(240,212,154,${al*.35})`;cx.lineWidth=.6;cx.beginPath();cx.moveTo(s.x-s.r*3.2,s.y);cx.lineTo(s.x+s.r*3.2,s.y);cx.moveTo(s.x,s.y-s.r*3.2);cx.lineTo(s.x,s.y+s.r*3.2);cx.stroke();}}
+    requestAnimationFrame(paint);};
+  seed();requestAnimationFrame(paint);addEventListener("resize",seed);
+}
+</script>
+</body>
+</html>
