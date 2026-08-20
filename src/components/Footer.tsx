@@ -28,6 +28,7 @@ export default function Footer() {
               ["#dia", "La carta del día"],
               ["#tirada", "La tirada de tres cartas"],
               ["#arcanos", "Arcanos destacados"],
+              ["#zodiaco", "La rueda del zodíaco"],
               ["#mazo", "El mazo completo"],
               ["#reserva", "Reservar lectura"],
             ].map(([href, label]) => (
