@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import confetti from "canvas-confetti";
 
 export interface Plan {
@@ -57,13 +58,13 @@ export default function CheckoutModal({ plan, onClose }: { plan: Plan; onClose: 
     );
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[90] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label={`Reservar ${plan.name}`}>
-      <button className="absolute inset-0 bg-night-950/88 backdrop-blur-sm" onClick={onClose} aria-label="Cerrar" />
+      <button className="backdrop-in absolute inset-0 bg-night-950/88 backdrop-blur-sm" onClick={onClose} aria-label="Cerrar" />
 
-      <div className="deal-in relative w-full max-w-md overflow-hidden rounded-xl border border-gold-600/50 bg-night-800 shadow-[0_40px_90px_rgba(0,0,0,0.75)]">
+      <div className="modal-in relative max-h-[92vh] w-full max-w-md overflow-y-auto overscroll-contain rounded-xl border border-gold-600/50 bg-night-800 shadow-[0_40px_90px_rgba(0,0,0,0.75)]">
         <div className="h-1 w-full bg-gradient-to-r from-gold-700 via-gold-300 to-gold-700" />
-        <button onClick={onClose} className="absolute right-3 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-gold-600/50 text-gold-300 transition-colors hover:bg-gold-500 hover:text-night-950" aria-label="Cerrar reserva">
+        <button autoFocus onClick={onClose} className="absolute right-3 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-gold-600/50 bg-night-800/70 text-gold-300 transition-colors hover:bg-gold-500 hover:text-night-950" aria-label="Cerrar reserva">
           <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" /></svg>
         </button>
 
@@ -144,6 +145,7 @@ export default function CheckoutModal({ plan, onClose }: { plan: Plan; onClose: 
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
