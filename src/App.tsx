@@ -4,8 +4,11 @@ import Hero from "./components/Hero";
 import CardOfDay from "./components/CardOfDay";
 import Reading from "./components/Reading";
 import FeaturedArcana from "./components/FeaturedArcana";
+import Zodiac from "./components/Zodiac";
 import Gallery from "./components/Gallery";
 import Pricing from "./components/Pricing";
+import Testimonials from "./components/Testimonials";
+import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
 
 export default function App() {
@@ -19,8 +22,11 @@ export default function App() {
         <CardOfDay />
         <Reading />
         <FeaturedArcana />
+        <Zodiac />
         <Gallery />
         <Pricing />
+        <Testimonials />
+        <FAQ />
       </main>
       <div className="relative z-10">
         <Footer />
